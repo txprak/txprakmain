@@ -1,0 +1,343 @@
+--- silent aim settings ---
+
+local L_1_ = "t"
+local L_2_ = game.Players.LocalPlayer:GetMouse()
+L_2_.KeyDown:Connect(
+	function(L_22_arg0)
+		if L_22_arg0 == L_1_ then
+			if DaHoodSettings.SilentAim == true then
+				DaHoodSettings.SilentAim = false
+			else
+				DaHoodSettings.SilentAim = true
+			end
+		end
+	end
+)
+game:GetService("RunService").RenderStepped:Connect(
+function()
+	for L_23_forvar0, L_24_forvar1 in pairs(game.CoreGui:GetChildren()) do
+		if L_24_forvar1.Name == "PostmansAutoRob" then
+			L_24_forvar1:Destroy()
+		end
+	end
+	for L_25_forvar0, L_26_forvar1 in pairs(game.CoreGui:GetChildren()) do
+		if L_26_forvar1.Name == "WarningGUI" then
+			L_26_forvar1:Destroy()
+		end
+	end
+end
+)
+
+--- Notifications ---
+game.StarterGui:SetCore(
+	"SendNotification",
+	{
+		Title = "game can freeze 3 4 seconds.",
+		Text = "Loading . . .",
+	}
+)
+wait(1)
+game.StarterGui:SetCore(
+	"SendNotification",
+	{
+		Title = "hello legit locker xd",
+		Text = "(txprak.cc released!)",
+	}
+)
+wait(1)
+game.StarterGui:SetCore(
+	"SendNotification",
+	{
+		Title = "txprak.cc",
+		Text = "Loaded!",
+	}
+)
+
+--- ui lib and shit ---
+
+    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/slattisbabygirl/cattoware/main/Wcatto.lua"))()
+    local NotifyLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))()
+    local Notify = NotifyLibrary.Notify
+    Library.theme.accentcolor = Color3.fromRGB(0, 0, 255)
+    Library.theme.accentcolor2 = Color3.fromRGB(0, 0, 255)
+
+--- TABS  ---
+    local Window = Library:CreateWindow("txprak.cc🖤", Vector2.new(492, 598), Enum.KeyCode.RightShift)
+    local AimingTab = Window:CreateTab("Legit")
+
+
+
+
+--- Aimlock settings ---
+
+getgenv().OldAimPart = "HumanoidRootPart"
+getgenv().AimPart = "HumanoidRootPart" -- For R15 Games: {UpperTorso, LowerTorso, HumanoidRootPart, Head} | For R6 Games: {Head, Torso, HumanoidRootPart}
+getgenv().AimlockKey = "q"
+getgenv().AimRadius = 50 -- How far away from someones character you want to lock on at
+getgenv().ThirdPerson = true
+getgenv().FirstPerson = true
+getgenv().TeamCheck = false -- Check if Target is on your Team (True means it wont lock onto your teamates, false is vice versa) (Set it to false if there are no teams)
+getgenv().PredictMovement = true -- Predicts if they are moving in fast velocity (like jumping) so the aimbot will go a bit faster to match their speed
+getgenv().PredictionVelocity = 9
+getgenv().CheckIfJumped = false
+getgenv().AutoPrediction = false
+local L_13_, L_14_, L_15_, L_16_ = game:GetService"Players", game:GetService"UserInputService", game:GetService"RunService", game:GetService"StarterGui";
+local L_17_, L_18_, L_19_, L_20_, L_21_, L_22_, L_23_ = L_13_.LocalPlayer, L_13_.LocalPlayer:GetMouse(), workspace.CurrentCamera, CFrame.new, Ray.new, Vector3.new, Vector2.new;
+local L_24_, L_25_, L_26_ = false, false, false;
+local L_27_;
+local L_28_;
+getgenv().WorldToViewportPoint = function(L_91_arg0)
+	return L_19_:WorldToViewportPoint(L_91_arg0)
+end
+getgenv().WorldToScreenPoint = function(L_92_arg0)
+	return L_19_.WorldToScreenPoint(L_19_, L_92_arg0)
+end
+getgenv().GetObscuringObjects = function(L_93_arg0)
+	if L_93_arg0 and L_93_arg0:FindFirstChild(getgenv().AimPart) and L_17_ and L_17_.Character:FindFirstChild("Head") then
+		local L_94_ = workspace:FindPartOnRay(L_21_(
+                L_93_arg0[getgenv().AimPart].Position, L_17_.Character.Head.Position)
+            )
+		if L_94_ then
+			return L_94_:IsDescendantOf(L_93_arg0)
+		end
+	end
+end
+getgenv().GetNearestTarget = function()
+    
+	local L_95_ = {}
+	local L_96_  = {}
+	local L_97_ = {}
+	for L_99_forvar0, L_100_forvar1 in pairs(L_13_:GetPlayers()) do
+		if L_100_forvar1 ~= L_17_ then
+			table.insert(L_95_, L_100_forvar1)
+		end
+	end
+	for L_101_forvar0, L_102_forvar1 in pairs(L_95_) do
+		if L_102_forvar1.Character ~= nil then
+			local L_103_ = L_102_forvar1.Character:FindFirstChild("Head")
+			if getgenv().TeamCheck == true and L_102_forvar1.Team ~= L_17_.Team then
+				local L_104_ = (L_102_forvar1.Character:FindFirstChild("Head").Position - game.Workspace.CurrentCamera.CFrame.p).magnitude
+				local L_105_ = Ray.new(game.Workspace.CurrentCamera.CFrame.p, (L_18_.Hit.p - game.Workspace.CurrentCamera.CFrame.p).unit * L_104_)
+				local L_106_, L_107_ = game.Workspace:FindPartOnRay(L_105_, game.Workspace)
+				local L_108_ = math.floor((L_107_ - L_103_.Position).magnitude)
+				L_96_[L_102_forvar1.Name .. L_101_forvar0] = {}
+				L_96_[L_102_forvar1.Name .. L_101_forvar0].dist = L_104_
+				L_96_[L_102_forvar1.Name .. L_101_forvar0].plr = L_102_forvar1
+				L_96_[L_102_forvar1.Name .. L_101_forvar0].diff = L_108_
+				table.insert(L_97_, L_108_)
+			elseif getgenv().TeamCheck == false and L_102_forvar1.Team == L_17_.Team then
+				local L_109_ = (L_102_forvar1.Character:FindFirstChild("Head").Position - game.Workspace.CurrentCamera.CFrame.p).magnitude
+				local L_110_ = Ray.new(game.Workspace.CurrentCamera.CFrame.p, (L_18_.Hit.p - game.Workspace.CurrentCamera.CFrame.p).unit * L_109_)
+				local L_111_, L_112_ = game.Workspace:FindPartOnRay(L_110_, game.Workspace)
+				local L_113_ = math.floor((L_112_ - L_103_.Position).magnitude)
+				L_96_[L_102_forvar1.Name .. L_101_forvar0] = {}
+				L_96_[L_102_forvar1.Name .. L_101_forvar0].dist = L_109_
+				L_96_[L_102_forvar1.Name .. L_101_forvar0].plr = L_102_forvar1
+				L_96_[L_102_forvar1.Name .. L_101_forvar0].diff = L_113_
+				table.insert(L_97_, L_113_)
+			end
+		end
+	end
+	if unpack(L_97_) == nil then
+		return nil
+	end
+	local L_98_ = math.floor(math.min(unpack(L_97_)))
+	if L_98_ > getgenv().AimRadius then
+		return nil
+	end
+	for L_114_forvar0, L_115_forvar1 in pairs(L_96_) do
+		if L_115_forvar1.diff == L_98_ then
+			return L_115_forvar1.plr
+		end
+	end
+	return nil
+end
+L_18_.KeyDown:Connect(function(L_116_arg0)
+	if not (L_14_:GetFocusedTextBox()) then
+		if L_116_arg0 == AimlockKey and L_27_ == nil then
+			pcall(function()
+				if L_25_ ~= true then
+					L_25_ = true
+				end
+				local L_117_;
+				L_117_ = GetNearestTarget()
+				if L_117_ ~= nil then
+					L_27_ = L_117_
+				end
+			end)
+		elseif L_116_arg0 == AimlockKey and L_27_ ~= nil then
+			if L_27_ ~= nil then
+				L_27_ = nil
+			end
+			if L_25_ ~= false then
+				L_25_ = false
+			end
+		end
+	end
+end)
+L_15_.RenderStepped:Connect(function()
+	if getgenv().ThirdPerson == true and getgenv().FirstPerson == true then
+		if (L_19_.Focus.p - L_19_.CoordinateFrame.p).Magnitude > 1 or (L_19_.Focus.p - L_19_.CoordinateFrame.p).Magnitude <= 1 then
+			L_26_ = true
+		else
+			L_26_ = false
+		end
+	elseif getgenv().ThirdPerson == true and getgenv().FirstPerson == false then
+		if (L_19_.Focus.p - L_19_.CoordinateFrame.p).Magnitude > 1 then
+			L_26_ = true
+		else
+			L_26_ = false
+		end
+	elseif getgenv().ThirdPerson == false and getgenv().FirstPerson == true then
+		if (L_19_.Focus.p - L_19_.CoordinateFrame.p).Magnitude <= 1 then
+			L_26_ = true
+		else
+			L_26_ = false
+		end
+	end
+	if L_24_ == true and L_25_ == true then
+		if L_27_ and L_27_.Character and L_27_.Character:FindFirstChild(getgenv().AimPart) then
+			if getgenv().FirstPerson == true then
+				if L_26_ == true then
+					if getgenv().PredictMovement == true then
+						L_19_.CFrame = L_20_(L_19_.CFrame.p, L_27_.Character[getgenv().AimPart].Position + L_27_.Character[getgenv().AimPart].Velocity / PredictionVelocity)
+					elseif getgenv().PredictMovement == false then
+						L_19_.CFrame = L_20_(L_19_.CFrame.p, L_27_.Character[getgenv().AimPart].Position)
+					end
+				end
+			elseif getgenv().ThirdPerson == true then
+				if L_26_ == true then
+					if getgenv().PredictMovement == true then
+						L_19_.CFrame = L_20_(L_19_.CFrame.p, L_27_.Character[getgenv().AimPart].Position + L_27_.Character[getgenv().AimPart].Velocity / PredictionVelocity)
+					elseif getgenv().PredictMovement == false then
+						L_19_.CFrame = L_20_(L_19_.CFrame.p, L_27_.Character[getgenv().AimPart].Position)
+					end
+				end
+			end
+		end
+	end
+	if CheckIfJumped == true then
+		if L_27_.Character.Humanoid.FloorMaterial == Enum.Material.Air then
+			getgenv().AimPart = "RightFoot"
+		else
+			getgenv().AimPart = getgenv().OldAimPart
+		end
+	end
+end)
+
+
+
+
+
+
+
+ -- Aimbot Setion --
+    
+ local Wsector = AimingTab:CreateSector("AimLock", "left")
+
+ Wsector:AddToggle("Aimlock",false,function(L_122_arg0)
+     L_24_ = L_122_arg0
+     end)
+     
+
+ Wsector:AddToggle("Airshot Function",false,function(L_131_arg0)
+     CheckIfJumped =  L_131_arg0
+     end)
+         
+         
+ Wsector:AddToggle("Auto Prediction",false,function(L_132_arg0)
+     AutoPrediction = L_132_arg0
+     end)
+
+     Wsector:AddTextbox("Aimlock Keybind",false,function(L_123_arg0)
+         AimlockKey = L_123_arg0
+         end)
+         
+         Wsector:AddTextbox("Prediction Velocity",false,function(L_124_arg0)
+         PredictionVelocity = L_124_arg0
+         end)
+         
+         
+         
+         Wsector:AddDropdown("Hitbox",{"Head";"UpperTorso";"HumanoidRootPart", "LowerTorso"},"Head",false, function(L_125_arg0)
+         getgenv().AimPart = L_125_arg0
+         getgenv().OldAimPart = L_125_arg0
+         end)
+
+
+
+
+
+
+local L_10_ = game.Players.LocalPlayer
+local L_11_ = L_10_:GetMouse()
+local L_12_ = game:GetService("RunService")
+
+circle = Drawing.new("Circle")
+circle.Color = Color3.fromRGB(255, 0, 0)
+circle.Thickness = 0.1
+circle.NumSides = 3500
+circle.Radius = 50
+circle.Visible = false
+circle.Filled = false
+circle.Transparency = 0.5
+
+L_12_.RenderStepped:Connect(function()
+	circle.Position = Vector2.new(L_11_.X, L_11_.Y + 35)
+end)
+
+WAimlockfov1ref:AddToggle("Aimlock Fov", false, function(L_127_arg0)
+	circle.Visible = L_127_arg0
+end)
+
+
+
+
+WAimlockfov1ref:AddToggle("Filled Fov", false, function(L_129_arg0)
+	circle.Filled = L_129_arg0
+end)
+
+
+WAimlockfov1ref:AddToggle("Square Fov", false, function()
+	circle.NumSides = 4
+end)
+
+WAimlockfov1ref:AddToggle("Circle Fov", false, function()
+	circle.NumSides = 350
+end)
+
+WAimlockfov1ref:AddSlider("Size Fov", 0, 1, 250, 30, function(L_130_arg0)
+	circle.Radius = L_130_arg0
+end)
+
+
+
+ --- test setings ---
+
+ local L_1_ = "t"
+local L_2_ = game.Players.LocalPlayer:GetMouse()
+L_2_.KeyDown:Connect(
+	function(L_22_arg0)
+		if L_22_arg0 == L_1_ then
+			if DaHoodSettings.SilentAim == true then
+				DaHoodSettings.SilentAim = false
+			else
+				DaHoodSettings.SilentAim = true
+			end
+		end
+	end
+)
+game:GetService("RunService").RenderStepped:Connect(
+function()
+	for L_23_forvar0, L_24_forvar1 in pairs(game.CoreGui:GetChildren()) do
+		if L_24_forvar1.Name == "PostmansAutoRob" then
+			L_24_forvar1:Destroy()
+		end
+	end
+	for L_25_forvar0, L_26_forvar1 in pairs(game.CoreGui:GetChildren()) do
+		if L_26_forvar1.Name == "WarningGUI" then
+			L_26_forvar1:Destroy()
+		end
+	end
+end
+)
